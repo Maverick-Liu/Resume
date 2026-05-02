@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刘奕显 Maverick - 个人简历 (Interactive Resume)</title>
+    <style>
+        /* 引入一种好看的英文字体用于 SVG 动画占位 */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+        /* ================= 基础重置与变量定义 ================= */
+        :root {
+            --c1: #ffa8b5;
+            --s1: 80vw;
+            --c2: #fff078;
+            --s2: 65vw;
+            --c3: #8cf0ff;
+            --s3: 50vw;
+            --c4: #d8b4ff;
+            --s4: 40vw;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body, html {
+            background-color: #fdfdfd;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* ================= 1. 动态流体背景 ================= */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            filter: blur(65px);
+            -webkit-filter: blur(65px);
+            transform: translate3d(0, 0, 0);
+            will-change: transform, width, height, background-color;
+            transition: background-color 3s ease-in-out, width 3s ease-in-out, height 3s ease-in-out;
+        }
+
+        .blob-1 {
+            background-color: var(--c1);
+            width: var(--s1);
+            height: var(--s1);
+            top: -15%;
+            left: -10%;
+            transform: translate3d(0, 0, 0) scaleY(0.5);
+            animation: float 10s infinite alternate ease-in-out;
+        }
+
+        .blob-2 {
+            background-color: var(--c2);
+            width: var(--s2);
+            height: var(--s2);
+            bottom: -10%;
+            right: -15%;
+            animation: float 10s infinite alternate-reverse ease-in-out;
+        }
+
+        .blob-3 {
+            background-color: var(--c3);
+            width: var(--s3);
+            height: var(--s3);
+            top: -10%;
+            right: 10%;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+
+        .blob-4 {
+            background-color: var(--c4);
+            width: var(--s4);
+            height: var(--s4);
+            bottom: -15%;
+            left: 10%;
+            animation: float 10s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+            33% {
+                transform: translate3d(15vw, 10vh, 0) scale(1.1);
+            }
+            66% {
+                transform: translate3d(-10vw, 15vh, 0) scale(0.95);
+            }
+            100% {
+                transform: translate3d(12vw, -12vh, 0) scale(1.05);
+            }
+        }
+
+        /* ================= 2. 玻璃视窗区 (简历内容) ================= */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 50px 20px;
+            will-change: transform;
+        }
+
+        .glass-window {
+            width: 100%;
+            max-width: 950px;
+            height: auto;
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .window-header {
+            height: 50px;
+            background: rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .mac-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background-color: #ff5f56;
+        }
+
+        .dot.yellow {
+            background-color: #ffbd2e;
+        }
+
+        .dot.green {
+            background-color: #27c93f;
+        }
+
+        /* ================= 3. 三语切换按钮 ================= */
+        .lang-switch {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            width: 120px;
+            height: 32px;
+            padding: 3px;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .lang-switch .slider {
+            position: absolute;
+            width: 36px;
+            height: 26px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            transition: transform 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .lang-switch.lang-zh .slider {
+            transform: translateX(0);
+        }
+
+        .lang-switch.lang-en .slider {
+            transform: translateX(39px);
+        }
+
+        .lang-switch.lang-es .slider {
+            transform: translateX(78px);
+        }
+
+        .lang-switch .label {
+            flex: 1;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #777;
+            z-index: 2;
+            user-select: none;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .lang-switch .label.active {
+            color: #111;
+        }
+
+        /* ================= 4. 简历内容排版 ================= */
+        .window-content {
+            padding: 50px 60px;
+            color: #222;
+            line-height: 1.8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .resume-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 45px;
+            gap: 35px;
+        }
+
+        .resume-header-left {
+            flex-shrink: 0;
+        }
+
+        .profile-pic {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 11%;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            background-color: rgba(0, 0, 0, 0.05);
+
+            /* ================= 👇 新增：强制高清渲染魔法 👇 ================= */
+            image-rendering: -webkit-optimize-contrast; /* 针对 Chrome 的清晰度优化，强制锐化 */
+            image-rendering: high-quality; /* 强制浏览器不计性能使用最高质量缩放 */
+            backface-visibility: hidden; /* 消除 WebKit 内核下圆角图片的边缘发虚 */
+            transform: translateZ(0); /* 为头像开启独立渲染层，保护它不被外部动画模糊掉 */
+        }
+
+        .profile-pic:hover {
+            /* 保证鼠标悬停放大时，依然保持独立渲染层，不会突然变糊 */
+            transform: scale(1.05) translateZ(0);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .resume-header-right {
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            color: #111;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .contact-info {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        section {
+            margin-bottom: 45px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            color: #111;
+            font-weight: bold;
+        }
+
+        .entry {
+            margin-bottom: 25px;
+        }
+
+        .entry-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.15rem;
+            color: #111;
+            margin-bottom: 5px;
+        }
+
+        .entry-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        ul {
+            padding-left: 20px;
+            font-size: 1rem;
+        }
+
+        li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        strong {
+            color: #000;
+            font-weight: 600;
+        }
+
+        .sub-list {
+            margin-top: 5px;
+            padding-left: 20px;
+            list-style-type: circle;
+        }
+
+        .sub-list li {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .wrapper {
+                padding: 20px 15px;
+            }
+
+            .window-content {
+                padding: 30px 25px;
+            }
+
+            .resume-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .entry-title {
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+
+        /* ================= 5. 底部固定蒙版视差区 ================= */
+        #scrollSpacer {
+            width: 100%;
+            height: 120vh;
+        }
+
+        .outro-cover-page {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.6); /* 调高透明度让背景隐约可见 */
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.15);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            transform: translateY(100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            will-change: transform;
+        }
+
+        /* SVG 动画核心样式 */
+        .welcome-svg {
+            width: 80%;
+            max-width: 800px;
+            /* 居中偏下一点点 */
+            transform: translateY(-5%);
+        }
+
+        .signature-path {
+            font-family: 'Dancing Script', cursive;
+            font-size: 120px;
+            font-weight: bold;
+            fill: transparent;
+            /* 引用 SVG 内部定义的渐变色，用轮播渐变替代 */
+            stroke: url(#rainbow1);
+            stroke-width: 2.5;
+
+            /* 动画核心引擎：虚线偏移 */
+            stroke-dasharray: 1500;
+            stroke-dashoffset: 1500;
+            transition: stroke-dashoffset 2s ease-in-out, fill 1s ease-in-out;
+        }
+
+        /* 当 JS 触发播放时添加 .play 类 */
+        .outro-cover-page.play .signature-path {
+            /* 1.5秒写完笔画，写完后用 0.8秒填充颜色 */
+            animation: drawLine 2.5s cubic-bezier(0.2, 0, 0.2, 1) forwards,
+            fillColor 1.5s 1.5s forwards,
+            gradientRotate 9s linear infinite 3s; /* 填充完成后再轮播 */
+        }
+
+        @keyframes drawLine {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        /* 填充默认渐变1 */
+        @keyframes fillColor {
+            100% {
+                fill: url(#rainbow1);
+                stroke: none; /* 填充后隐藏描边，更美观 */
+            }
+        }
+        /* 渐变轮播（不变） */
+        @keyframes gradientRotate {
+            0% {
+                fill: url(#rainbow1);
+            }
+            33.33% {
+                fill: url(#rainbow2);
+            }
+            66.66% {
+                fill: url(#rainbow3);
+            }
+            100% {
+                fill: url(#rainbow1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="background-container">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+</div>
+
+<div class="wrapper" id="resumeWrapper">
+    <div class="glass-window">
+        <div class="window-header">
+            <div class="mac-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="lang-switch lang-zh" id="langSwitch">
+                <div class="slider"></div>
+                <div class="label active" id="labelZh" onclick="setLanguage('zh')">中</div>
+                <div class="label" id="labelEn" onclick="setLanguage('en')">EN</div>
+                <div class="label" id="labelEs" onclick="setLanguage('es')">ES</div>
+            </div>
+        </div>
+
+        <div class="window-content" id="contentZh">
+            <div class="resume-header">
+                <div class="resume-header-left">
+                    <img src="IMG_3228.jpg" alt="刘奕显 Maverick" class="profile-pic">
+                </div>
+                <div class="resume-header-right">
+                    <h1>刘奕显 Maverick</h1>
+                    <p class="contact-info">
+                        15986495118 | 932978834@qq.com<br>
+                        C1驾照可出差/外派
+                    </p>
+                </div>
+            </div>
+
+            <section>
+                <h2>自我评价 Evaluation</h2>
+                <ul>
+                    <li><strong>自驱规划与闭环执行力：</strong>依托独立自学与深度调研，0-1搭建留学全流程申请及管理体系，精准把控全链路节点、核心细节与申请节奏，独立完成全套申请材料的撰写与打磨，最终斩获英、港、澳等多所世界排名TOP50的顶尖高校
+                        offer。
+                    </li>
+                    <li><strong>数据驱动与双语决策支持能力：</strong>熟练掌握 Python 数据分析全栈工具、Tableau 及 Excel
+                        高级分析功能，可独立完成复杂数据处理、数据模型搭建与可视化分析全流程，输出可落地的数据洞察，支撑业务决策；具备流利的英语听说读写能力(TOEFL认证)，擅长将深度数据分析结果转化为逻辑严密、洞察深刻的中英双语数据分析报告，实现从分析结论到跨国业务决策的高效交付。
+                    </li>
+                    <li><strong>跨文化沟通与协作能力：</strong>具备全球化业务视野与优秀的跨文化适配能力，曾旅居英国、拉美数年，对不同地域的商业环境、决策思维与业务落地逻辑有一线体感与深刻认知。深知数据分析结论需结合本地市场实际做适配调整，可基于地域差异优化分析结论的呈现方式、落地策略与跨团队沟通逻辑，规避数据与业务现实脱节的问题；既能保障跨地域数据分析成果的可落地性，也能高效对齐多背景团队、建立协作信任，为跨地域项目推进提供稳定支撑。
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>教育背景 Education</h2>
+                <div class="entry">
+                    <div class="entry-title">
+                        <span>爱丁堡大学 (University of Edinburgh)</span><span>2022.09 - 2024.07</span></div>
+                    <div class="entry-subtitle">社会科学与技术专业 | 硕士</div>
+                    <ul>
+                        <li><strong>主修课程：</strong>分析定性数据、创新系统与风险管理、数据社会中的争议。深化了定量与定性研究技能，重点学习了技术对社会的影响及其在数据分析和技术创新中的应用。
+                        </li>
+                        <li><strong>课外研究：</strong>与教授参与关于社会技术系统与人工智能治理的论文研究项目。</li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title">
+                        <span>广州南方学院 (原中山大学南方学院)</span><span>2018.09 - 2022.06</span></div>
+                    <div class="entry-subtitle">计算机专业 | 本科 | 毕业成绩 86.55，年级排名 11/264</div>
+                    <ul>
+                        <li>获得“优秀毕业生”称号</li>
+                        <li><strong>学术发表：</strong>
+                            <ul class="sub-list">
+                                <li>作为二作身份发表SCI论文(中科院三区)：《Computer modeling for frequency performance of
+                                    viscoelastic magneto-electro-elastic annular micro/nanosystem via adaptive tuned
+                                    deep learning neural network optimization》 -
+                                    基于自适应调谐深度学习神经网络优化的粘弹性磁电弹性环形微纳系统频率性能的计算机建模
+                                </li>
+                                <li>作为一作身份发表EI会议论文(CSTNED 2021)：《The Visualization Method of Data Analysis
+                                    in The Financial Field Based on Big Data Analysis》 - 基于大数据分析的金融领域数据分析可视化方法
+                                </li>
+                                <li>作为二作身份发表EI会议论文(ICFC 2021)：《Analysis of risk asset model based on
+                                    artificial intelligence algorithm》 - 基于人工智能算法的风险资产模型分析
+                                </li>
+                            </ul>
+                        </li>
+                        <li><strong>竞赛荣誉：</strong>
+                            <ul class="sub-list">
+                                <li>第十二届蓝桥杯全国软件与信息技术大赛广东赛区Java大学B组三等奖(省级)</li>
+                                <li>第三届传智杯全国大学生IT技能大赛程序设计B组赛道省优秀奖(省级)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>工作经历 Experiences</h2>
+                <div class="entry">
+                    <div class="entry-title"><span>广东纽恩泰新能源科技股份有限公司</span><span>2025.05 - 2025.09</span>
+                    </div>
+                    <div class="entry-subtitle">海外助理销售工程师</div>
+                    <ul>
+                        <li><strong>客户开发与业绩贡献：</strong>通过自主运营社交媒体及对
+                            B2B平台流量数据、海外竞品数据、目标客群画像数据等多维度分析，优化社交媒体获客策略，精准定位高潜力客户，成功开发5家以上新客户，实现累计回款40万人民币。
+                        </li>
+                        <li><strong>产品认知与市场调研：</strong>系统掌握空气能热泵产品结构，快速熟悉各系列产品并提炼优势与应用场景，参与市场调研与销售方案制定，为有效支持产品推广与客户拓展提供数据分析支持。
+                        </li>
+                        <li><strong>考核表现：</strong>在实习期考核中从13名实习生中脱颖而出，综合成绩排名第二。</li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>广州市橘子留学服务有限公司</span><span>2022.05 - 2024.10</span></div>
+                    <div class="entry-subtitle">留学文书副主管</div>
+                    <ul>
+                        <li><strong>专业文书撰写与质控：</strong>主导专业级文书润色，定制优化个人陈述、推荐信等材料，审核文书团队成果，把控质量标准，确保语言准确性和专业性并符合院校要求。
+                        </li>
+                        <li><strong>申请策略与竞争力提升：</strong>通过对往年院校录取数据的分析，为学生定制个性化申请与文书策略，精准把握申请时间节点与选校方向，配合全流程申请指导，助力学生突破背景限制，斩获顶尖院校录取。
+                        </li>
+                        <li><strong>成果展示：</strong>实现 100% offer 率与零退费，帮助数百位“双非”学生获全球前100名校录取，文书质量获学生和家长高度认可。
+                        </li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>广州乐知教育科技有限公司</span><span>2020.03 - 2020.09</span></div>
+                    <div class="entry-subtitle">梅州区域负责人兼技术副组长</div>
+                    <ul>
+                        <li><strong>商业拓展及管理：</strong>负责梅州区域教学业务的拓展与运营，完成教学团队的招募、管理及教学场地洽谈，搭建区域业务标准化交付体系，推动区域教学项目顺利落地。
+                        </li>
+                        <li><strong>技术-业务联动支撑：</strong>兼任技术副组长，参与线上教育系统的需求梳理、设计研发与迭代维护，联动团队完成学生学习水平评估算法的落地优化；基于一线业务数据与用户需求提出产品迭代方向，打通业务需求与技术的连接通道，实现技术功能与个性化教学场景的精准匹配，保障系统对学生的分层精准评估。
+                        </li>
+                        <li><strong>项目成果：</strong>系统成功上线并与高途课堂展开合作，有超过1000名活跃学生使用该平台。
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>荣誉奖励 Awards & Skills</h2>
+                <ul>
+                    <li><strong>语言证书：</strong>TOEFL证书、英语四六级证书</li>
+                    <li><strong>技术技能：</strong>Python 爬虫及数据分析、前后端开发、RPA自动化、熟练操作 Office 办公专业软件。
+                    </li>
+                    <li><strong>文书技能：</strong>人文社科与计算机领域留学文书创新与定制化撰写，学术分析论文、国际商务中英双语分析报告撰写。
+                    </li>
+                    <li><strong>兴趣爱好：</strong>钢琴，国画</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="window-content hidden" id="contentEn">
+            <div class="resume-header">
+                <div class="resume-header-left">
+                    <img src="IMG_3228.jpg" alt="Yixian Liu (Maverick)" class="profile-pic">
+                </div>
+                <div class="resume-header-right">
+                    <h1>Yixian Liu (Maverick)</h1>
+                    <p class="contact-info">
+                        (+86) 15986495118 | 932978834@qq.com<br>
+                        C1 Driver's License | Open to travel & relocation
+                    </p>
+                </div>
+            </div>
+
+            <section>
+                <h2>Profile Summary</h2>
+                <ul>
+                    <li><strong>Self-Driven Planning & End-to-End Execution:</strong> Relying on independent research
+                        and self-learning, built a comprehensive study-abroad application and management system from
+                        scratch (0-to-1). Precisely controlled core details and timelines, independently completing and
+                        refining all application materials. Successfully secured admission offers from multiple Top 50
+                        global universities in the UK, Hong Kong, and Australia.
+                    </li>
+                    <li><strong>Data-Driven & Bilingual Decision Support:</strong> Proficient in the Python data
+                        analysis stack, Tableau, and advanced Excel functions. Capable of independently managing complex
+                        data processing, model building, and visualization to deliver actionable business insights.
+                        Fluent in English (TOEFL Certified), excelling in translating in-depth data analysis into
+                        rigorous, insightful bilingual (Chinese-English) reports to facilitate cross-border business
+                        decisions.
+                    </li>
+                    <li><strong>Cross-Cultural Communication & Collaboration:</strong> Possess a global business
+                        perspective and excellent cross-cultural adaptability, having lived in the UK and Latin America
+                        for years. Deeply understand diverse local business environments and decision-making logic.
+                        Adept at tailoring data presentation and implementation strategies to regional differences,
+                        effectively bridging the gap between data insights and actual business implementation while
+                        aligning multi-background teams.
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Education</h2>
+                <div class="entry">
+                    <div class="entry-title"><span>University of Edinburgh</span><span>Sep 2022 - Jul 2024</span></div>
+                    <div class="entry-subtitle">Master of Science (MSc) in Science and Technology in Society</div>
+                    <ul>
+                        <li><strong>Core Courses:</strong> Analyzing Qualitative Data, Innovation Systems and Risk
+                            Management, Controversies in the Data Society. Deepened quantitative and qualitative
+                            research skills, focusing on the societal impact of technology and its application in data
+                            analysis.
+                        </li>
+                        <li><strong>Extracurricular Research:</strong> Collaborated with professors on a thesis research
+                            project examining socio-technical systems and AI governance.
+                        </li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangzhou Nanfang College</span><span>Sep 2018 - Jun 2022</span>
+                    </div>
+                    <div class="entry-subtitle">Bachelor of Engineering (BEng) in Computer Science | Rank: 11/264</div>
+                    <ul>
+                        <li>Awarded <strong>"Outstanding Graduate"</strong>.</li>
+                        <li><strong>Academic Publications:</strong>
+                            <ul class="sub-list">
+                                <li>Co-author (2nd), SCI Q3: <em>"Computer modeling for frequency performance of
+                                    viscoelastic magneto-electro-elastic annular micro/nanosystem via adaptive tuned
+                                    deep learning neural network optimization"</em></li>
+                                <li>First author, EI Conference (CSTNED 2021): <em>"The Visualization Method of Data
+                                    Analysis in The Financial Field Based on Big Data Analysis"</em></li>
+                                <li>Co-author (2nd), EI Conference (ICFC 2021): <em>"Analysis of risk asset model based
+                                    on artificial intelligence algorithm"</em></li>
+                            </ul>
+                        </li>
+                        <li><strong>Competition Awards:</strong>
+                            <ul class="sub-list">
+                                <li>3rd Prize (Provincial), Java Programming Group B, 12th Lanqiao Cup National Software
+                                    Competition.
+                                </li>
+                                <li>Excellence Award (Provincial), Programming Group B, 3rd Chuanzhi Cup National IT
+                                    Skills Competition.
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>Professional Experience</h2>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangdong Nuentai New Energy Technology Co., Ltd.</span><span>May 2025 - Sep 2025</span>
+                    </div>
+                    <div class="entry-subtitle">Overseas Assistant Sales Engineer</div>
+                    <ul>
+                        <li><strong>Client Development:</strong> Optimized overseas acquisition strategies by
+                            independently operating social media and conducting multi-dimensional analysis on B2B
+                            traffic and competitor data. Successfully acquired 5+ new clients, generating a cumulative
+                            payment of 400,000 RMB.
+                        </li>
+                        <li><strong>Market Research:</strong> Systematically mastered air-source heat pump product
+                            structures, extracted competitive advantages, and participated in formulating market
+                            research and sales plans to support product promotion.
+                        </li>
+                        <li><strong>Performance:</strong> Ranked 2nd overall among 13 interns during the final
+                            internship assessment.
+                        </li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangzhou Orange Overseas Education Consulting Co., Ltd.</span><span>May 2022 - Oct 2024</span>
+                    </div>
+                    <div class="entry-subtitle">Deputy Head of Application Essays</div>
+                    <ul>
+                        <li><strong>Essay Quality Control:</strong> Led professional-level essay polishing and
+                            customized personal statements and recommendation letters. Regulated quality standards
+                            across the team to ensure accuracy and compliance with university requirements.
+                        </li>
+                        <li><strong>Application Strategy:</strong> Analyzed historical admission data to customize
+                            application strategies, precisely grasping timelines to help students overcome academic
+                            background limitations.
+                        </li>
+                        <li><strong>Achievements:</strong> Achieved a 100% offer rate and zero refund rate, assisting
+                            hundreds of non-target university students in securing admission to global Top 100
+                            universities.
+                        </li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangzhou Lezhi Education Technology Co., Ltd.</span><span>Mar 2020 - Sep 2020</span>
+                    </div>
+                    <div class="entry-subtitle">Meizhou Regional Manager & Deputy Technical Lead</div>
+                    <ul>
+                        <li><strong>Business Development:</strong> Managed regional teaching business expansion,
+                            recruited the team, negotiated teaching venues, and established a standardized regional
+                            delivery system.
+                        </li>
+                        <li><strong>Technical Alignment:</strong> Participated in the requirement analysis and R&D of
+                            the online education system. Bridged the gap between business needs and technical
+                            capabilities, optimizing student assessment algorithms to ensure accurate tiered
+                            evaluations.
+                        </li>
+                        <li><strong>Project Results:</strong> The system was successfully launched and partnered with
+                            Gaotu Classroom, attracting over 1,000 active students to the platform.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>Honors & Skills</h2>
+                <ul>
+                    <li><strong>Languages:</strong> TOEFL Certificate, CET-4 / CET-6.</li>
+                    <li><strong>Technical Skills:</strong> Python (Web Scraping, Data Analysis), Tableau, RPA
+                        Automation, Full-Stack Development.
+                    </li>
+                    <li><strong>Writing:</strong> Academic analytical papers, bilingual international business reports,
+                        customized study-abroad essays.
+                    </li>
+                    <li><strong>Interests:</strong> Piano, Traditional Chinese Painting.</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="window-content hidden" id="contentEs">
+            <div class="resume-header">
+                <div class="resume-header-left">
+                    <img src="IMG_3228.jpg" alt="Yixian Liu (Maverick)" class="profile-pic">
+                </div>
+                <div class="resume-header-right">
+                    <h1>Yixian Liu (Maverick)</h1>
+                    <p class="contact-info">
+                        (+86) 15986495118 | 932978834@qq.com<br>
+                        Licencia de conducir C1 | Disponibilidad para viajar y reubicarse
+                    </p>
+                </div>
+            </div>
+
+            <section>
+                <h2>Perfil Profesional</h2>
+                <ul>
+                    <li><strong>Planificación Autónoma y Ejecución Integral:</strong> Basado en investigación
+                        independiente y aprendizaje autodidacta, construí desde cero un sistema integral de gestión y
+                        postulación para estudios en el extranjero. Controlé con precisión los detalles clave y los
+                        cronogramas, redactando y perfeccionando de manera independiente todos los materiales de
+                        solicitud. Logré con éxito ofertas de admisión de múltiples universidades del Top 50 mundial en
+                        el Reino Unido, Hong Kong y Australia.
+                    </li>
+                    <li><strong>Toma de Decisiones Basada en Datos y Bilingüismo:</strong> Dominio del stack de análisis
+                        de datos en Python, Tableau y funciones avanzadas de Excel. Capaz de gestionar de forma
+                        independiente el procesamiento de datos complejos, la construcción de modelos y la visualización
+                        para ofrecer perspectivas de negocio viables. Fluidez en inglés (Certificado TOEFL), destacando
+                        en la traducción de análisis de datos profundos en informes bilingües (chino-inglés) rigurosos y
+                        perspicaces para facilitar decisiones comerciales transfronterizas.
+                    </li>
+                    <li><strong>Comunicación y Colaboración Intercultural:</strong> Poseo una perspectiva comercial
+                        global y una excelente adaptabilidad transcultural, habiendo residido en el Reino Unido y
+                        América Latina durante varios años. Comprendo profundamente los diversos entornos empresariales
+                        y la lógica de toma de decisiones local. Adepto a adaptar las presentaciones de datos y las
+                        estrategias de implementación a las diferencias regionales, cerrando eficazmente la brecha entre
+                        los conocimientos de datos y la implementación comercial real, al tiempo que alineo equipos con
+                        antecedentes diversos.
+                    </li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Educación</h2>
+                <div class="entry">
+                    <div class="entry-title"><span>Universidad de Edimburgo (University of Edinburgh)</span><span>Sep 2022 - Jul 2024</span>
+                    </div>
+                    <div class="entry-subtitle">Máster en Ciencia y Tecnología en la Sociedad (MSc)</div>
+                    <ul>
+                        <li><strong>Cursos principales:</strong> Análisis de Datos Cualitativos, Sistemas de Innovación
+                            y Gestión de Riesgos, Controversias en la Sociedad de Datos. Profundicé en habilidades de
+                            investigación cuantitativa y cualitativa, centrándome en el impacto social de la tecnología
+                            y su aplicación en el análisis de datos.
+                        </li>
+                        <li><strong>Investigación extracurricular:</strong> Colaboré con profesores en un proyecto de
+                            tesis sobre sistemas sociotécnicos y la gobernanza de la inteligencia artificial.
+                        </li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title">
+                        <span>Universidad Nanfang de Guangzhou</span><span>Sep 2018 - Jun 2022</span></div>
+                    <div class="entry-subtitle">Grado en Ingeniería Informática (BEng) | Rango: 11/264</div>
+                    <ul>
+                        <li>Galardonado como <strong>"Graduado Sobresaliente"</strong>.</li>
+                        <li><strong>Publicaciones académicas:</strong>
+                            <ul class="sub-list">
+                                <li>Coautor (2º autor), SCI Q3: <em>"Computer modeling for frequency performance of
+                                    viscoelastic magneto-electro-elastic annular micro/nanosystem via adaptive tuned
+                                    deep learning neural network optimization"</em></li>
+                                <li>Primer autor, Conferencia EI (CSTNED 2021): <em>"The Visualization Method of Data
+                                    Analysis in The Financial Field Based on Big Data Analysis"</em></li>
+                                <li>Coautor (2º autor), Conferencia EI (ICFC 2021): <em>"Analysis of risk asset model
+                                    based on artificial intelligence algorithm"</em></li>
+                            </ul>
+                        </li>
+                        <li><strong>Premios en concursos:</strong>
+                            <ul class="sub-list">
+                                <li>3.er Premio (Provincial), Grupo B de Programación Java, 12º Concurso Nacional de
+                                    Software Copa Lanqiao.
+                                </li>
+                                <li>Premio a la Excelencia (Provincial), Grupo B de Programación, 3.er Concurso Nacional
+                                    de Habilidades TI Copa Chuanzhi.
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>Experiencia Profesional</h2>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangdong Nuentai New Energy Technology Co., Ltd.</span><span>May 2025 - Sep 2025</span>
+                    </div>
+                    <div class="entry-subtitle">Ingeniero Asistente de Ventas en el Extranjero</div>
+                    <ul>
+                        <li><strong>Desarrollo de clientes:</strong> Optimicé las estrategias de adquisición en el
+                            extranjero mediante la operación independiente de redes sociales y el análisis
+                            multidimensional de datos de tráfico B2B y competidores. Capté con éxito más de 5 nuevos
+                            clientes, generando ingresos acumulados de 400,000 RMB.
+                        </li>
+                        <li><strong>Investigación de mercado:</strong> Dominé sistemáticamente las estructuras de los
+                            productos de bombas de calor de fuente de aire, extraje ventajas competitivas y participé en
+                            la formulación de planes de ventas y estudios de mercado para respaldar la promoción de
+                            productos.
+                        </li>
+                        <li><strong>Desempeño:</strong> Ocupé el 2º lugar en la evaluación final entre 13 becarios.</li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangzhou Orange Overseas Education Consulting Co., Ltd.</span><span>May 2022 - Oct 2024</span>
+                    </div>
+                    <div class="entry-subtitle">Subdirector de Ensayos de Admisión</div>
+                    <ul>
+                        <li><strong>Control de calidad de redacción:</strong> Lideré la edición de ensayos a nivel
+                            profesional y personalicé cartas de motivación y de recomendación. Supervisé los resultados
+                            del equipo para garantizar la precisión del idioma y el cumplimiento con los requisitos
+                            universitarios.
+                        </li>
+                        <li><strong>Estrategia de solicitud:</strong> Analicé datos históricos de admisión para
+                            personalizar las estrategias de solicitud, dominando los cronogramas para ayudar a los
+                            estudiantes a superar las limitaciones de su perfil académico.
+                        </li>
+                        <li><strong>Logros:</strong> Alcancé una tasa de admisión del 100% con cero reembolsos, ayudando
+                            a cientos de estudiantes de universidades no destacadas a ingresar a las 100 mejores
+                            universidades del mundo.
+                        </li>
+                    </ul>
+                </div>
+                <div class="entry">
+                    <div class="entry-title"><span>Guangzhou Lezhi Education Technology Co., Ltd.</span><span>Mar 2020 - Sep 2020</span>
+                    </div>
+                    <div class="entry-subtitle">Gerente Regional de Meizhou y Subdirector Técnico</div>
+                    <ul>
+                        <li><strong>Desarrollo de negocios:</strong> Gestioné la expansión de la enseñanza regional,
+                            recluté el equipo, negocié los lugares de enseñanza y establecí un sistema de entrega
+                            regional estandarizado.
+                        </li>
+                        <li><strong>Alineación técnico-comercial:</strong> Participé en el análisis de requisitos y en
+                            el I+D del sistema de educación en línea. Cerré la brecha entre las necesidades comerciales
+                            y las capacidades técnicas, optimizando los algoritmos de evaluación de los estudiantes para
+                            garantizar evaluaciones estratificadas precisas.
+                        </li>
+                        <li><strong>Resultados del proyecto:</strong> El sistema se lanzó con éxito y se asoció con
+                            Gaotu Classroom, atrayendo a más de 1,000 estudiantes activos a la plataforma.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <h2>Habilidades y Reconocimientos</h2>
+                <ul>
+                    <li><strong>Idiomas:</strong> Certificado TOEFL, CET-4 / CET-6.</li>
+                    <li><strong>Habilidades técnicas:</strong> Python (Web Scraping, Análisis de Datos), Tableau,
+                        Automatización RPA, Desarrollo Full-Stack.
+                    </li>
+                    <li><strong>Redacción:</strong> Artículos analíticos académicos, informes comerciales
+                        internacionales bilingües, redacción personalizada de ensayos para estudiar en el extranjero.
+                    </li>
+                    <li><strong>Intereses:</strong> Piano, Pintura tradicional china.</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+
+<div id="scrollSpacer"></div>
+
+<div class="outro-cover-page" id="outroPage">
+    <svg viewBox="0 0 800 300" class="welcome-svg">
+        <!-- 👇 合并所有渐变，id唯一不重复 -->
+        <defs>
+            <!-- 渐变1 -->
+            <linearGradient id="rainbow1" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#00a6ff"></stop>
+                <stop offset="18%" stop-color="#00c6a2"></stop>
+                <stop offset="36%" stop-color="#53d93e"></stop>
+                <stop offset="54%" stop-color="#f4c732"></stop>
+                <stop offset="72%" stop-color="#ff7a1a"></stop>
+                <stop offset="86%" stop-color="#ff3c81"></stop>
+                <stop offset="100%" stop-color="#9d4edd"></stop>
+            </linearGradient>
+
+            <!-- 渐变2 -->
+            <linearGradient id="rainbow2" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="30%" stop-color="#2563EB"></stop>
+                <stop offset="50%" stop-color="#D946EF"></stop>
+                <stop offset="62.5%" stop-color="#8B5CF6"></stop>
+                <stop offset="75%" stop-color="#14B8A6"></stop>
+                <stop offset="100%" stop-color="#F97316"></stop>
+            </linearGradient>
+
+            <!-- 渐变3 -->
+            <linearGradient id="rainbow3" x1="0" y1="0" x2="800" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="25%" stop-color="#EAB308"></stop>
+                <stop offset="37.5%" stop-color="#D946EF"></stop>
+                <stop offset="50%" stop-color="#8B5CF6"></stop>
+                <stop offset="62.5%" stop-color="#14B8A6"></stop>
+                <stop offset="75%" stop-color="#F97316"></stop>
+                <stop offset="100%" stop-color="#EA580C"></stop>
+            </linearGradient>
+        </defs>
+
+        <!-- 👇 文字绑定轮播动画 -->
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="signature-path">
+            Maverick
+        </text>
+    </svg>
+</div>
+
+<script>
+    // ================= 背景动画逻辑 =================
+    const colorPalettes = [
+        ['#ffa8b5', '#fff078', '#8cf0ff', '#d8b4ff'],
+        ['#E87F24', '#FFC81E', '#FEFDDF', '#73A5CA'],
+        ['#a18cd1', '#fbc2eb', '#ff9a9e', '#fecfef'],
+        ['#4facfe', '#00f2fe', '#43e97b', '#38f9d7']
+    ];
+
+    const root = document.documentElement;
+    let currentIndex = 0;
+
+    function updateBackground() {
+        let newIndex = Math.floor(Math.random() * colorPalettes.length);
+        if (newIndex === currentIndex) newIndex = (newIndex + 1) % colorPalettes.length;
+        currentIndex = newIndex;
+
+        const palette = colorPalettes[currentIndex];
+        root.style.setProperty('--c1', palette[0]);
+        root.style.setProperty('--s1', (Math.random() * 20 + 70) + 'vw');
+        root.style.setProperty('--c2', palette[1]);
+        root.style.setProperty('--s2', (Math.random() * 15 + 60) + 'vw');
+        root.style.setProperty('--c3', palette[2]);
+        root.style.setProperty('--s3', (Math.random() * 15 + 45) + 'vw');
+        root.style.setProperty('--c4', palette[3]);
+        root.style.setProperty('--s4', (Math.random() * 15 + 30) + 'vw');
+    }
+
+    updateBackground();
+    setInterval(updateBackground, 5000);
+
+    // ================= 三语切换核心逻辑 =================
+    function setLanguage(lang) {
+        const switchBtn = document.getElementById('langSwitch');
+        const contents = {
+            'zh': document.getElementById('contentZh'),
+            'en': document.getElementById('contentEn'),
+            'es': document.getElementById('contentEs')
+        };
+        const labels = {
+            'zh': document.getElementById('labelZh'),
+            'en': document.getElementById('labelEn'),
+            'es': document.getElementById('labelEs')
+        };
+
+        switchBtn.className = 'lang-switch lang-' + lang;
+        for (let key in contents) {
+            contents[key].classList.add('hidden');
+            labels[key].classList.remove('active');
+        }
+        contents[lang].classList.remove('hidden');
+        labels[lang].classList.add('active');
+    }
+
+    // ================= 核心：视差、磁吸全屏与触发 SVG 动画 =================
+    const resumeWrapper = document.getElementById('resumeWrapper');
+    const outroPage = document.getElementById('outroPage');
+
+    let isSnapping = false;
+    let hasPlayed = false;
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+        if (isSnapping) return;
+
+        const currentScrollY = window.scrollY;
+        const isScrollingUp = currentScrollY < lastScrollY;
+        lastScrollY = currentScrollY;
+
+        const resumeBottom = resumeWrapper.offsetTop + resumeWrapper.offsetHeight;
+        const scrollBottom = currentScrollY + window.innerHeight;
+        let overlap = scrollBottom - resumeBottom;
+
+        if (overlap > 0) {
+            // 反向打断与回弹
+            if (isScrollingUp) {
+                isSnapping = true;
+
+                // 移除 play 类，重置 SVG 动画
+                outroPage.classList.remove('play');
+                hasPlayed = false;
+
+                outroPage.style.transition = 'transform 0.5s cubic-bezier(0.33, 1, 0.68, 1)';
+                outroPage.style.transform = 'translateY(100%)';
+
+                const targetScrollY = Math.max(0, resumeBottom - window.innerHeight - 2);
+                window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+
+                setTimeout(() => {
+                    isSnapping = false;
+                    resumeWrapper.style.transform = `translateY(0px)`;
+                }, 500);
+                return;
+            }
+
+            // 简历固定错觉
+            resumeWrapper.style.transform = `translateY(${overlap * 0.85}px)`;
+
+            let coverPercent = 100 - ((overlap / window.innerHeight) * 130);
+            if (coverPercent < 0) coverPercent = 0;
+
+            // 磁吸判断
+            if (coverPercent <= 30) {
+                isSnapping = true;
+
+                outroPage.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                outroPage.style.transform = 'translateY(0%)';
+
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+                // ======= 关键：触发 SVG 动画 =======
+                if (!hasPlayed) {
+                    outroPage.classList.add('play'); // 加上类名，CSS 的 @keyframes 就会自动执行
+                    hasPlayed = true;
+                }
+
+                setTimeout(() => {
+                    isSnapping = false;
+                }, 800);
+            } else {
+                outroPage.style.transition = 'none';
+                outroPage.style.transform = `translateY(${coverPercent}%)`;
+            }
+
+        } else {
+            resumeWrapper.style.transform = `translateY(0px)`;
+            outroPage.style.transition = 'none';
+            outroPage.style.transform = `translateY(100%)`;
+
+            // 重置动画
+            outroPage.classList.remove('play');
+            hasPlayed = false;
+        }
+    });
+</script>
+</body>
+</html>
